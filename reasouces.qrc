@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/Resources">
+        <file>add.png</file>
+        <file>delete.png</file>
+        <file>edit.png</file>
+        <file>info.png</file>
+        <file>deleteAll.png</file>
+        <file>stop.png</file>
+        <file>alarm.mp3</file>
+    </qresource>
+</RCC>
