@@ -49,7 +49,6 @@ MainWindow::MainWindow()
 void MainWindow::timerEvent(QTimerEvent* e)
 {
     Q_UNUSED(e);
-    timelbl->setText(QTime::currentTime().toString());
     if (timers.size() > 0) {
         for (int i = 0; i < timers.size(); i++) {
             timers[i].setTime(timers[i].getTime().addMSecs(-500));
@@ -93,7 +92,7 @@ QList<Timer> MainWindow::getTimers()
         }
         return timers;
     }
-    else qDebug() << "No!" << Qt::endl;
+    else qDebug() << "немає!" << Qt::endl;
 }
 
 void MainWindow::setToolBar()
@@ -117,15 +116,6 @@ void MainWindow::setToolBar()
     QAction* dleteAll = toolbar->addAction(QIcon(deleteallpix), "Видалити всі");
     QAction* info = toolbar->addAction(QIcon(infopix), "Не турбувати");
     toolbar->setMovable(false);
-    toolbar->addSeparator();
-
-    QLabel* lbl = new QLabel("Поточний час: ");
-
-    toolbar->addWidget(lbl);
-
-    timelbl = new QLabel(QTime::currentTime().toString());
-    startTimer(1000);
-    toolbar->addWidget(timelbl);
 
     connect(stop, &QAction::triggered, this, &MainWindow::stopTimer);
     connect(add, &QAction::triggered, this, &MainWindow::addTimer);
@@ -150,12 +140,8 @@ void MainWindow::addTimer()
 
     addDescLbl = new QLabel("Опис");
     addDescLbl->setGeometry(20, 100, 50, 20);
-
     addTextEdit = new QTextEdit();
     addTextEdit->setGeometry(90, 130, 100, 150);
-
-    addCountLbl = new QLabel("Кількість");
-    addCountTextEdit = new QTextEdit();
 
     QPushButton* addBtn = new QPushButton("Створити", addWindow);
 
@@ -165,8 +151,6 @@ void MainWindow::addTimer()
     addWindow->layout()->addWidget(addTimeEdit);
     addWindow->layout()->addWidget(addDescLbl);
     addWindow->layout()->addWidget(addTextEdit);
-    addWindow->layout()->addWidget(addCountLbl);
-    addWindow->layout()->addWidget(addCountTextEdit);
     addWindow->layout()->addWidget(addBtn);
 
     connect(addBtn, &QPushButton::clicked, this, &MainWindow::addTimerBtnClicked);
@@ -177,9 +161,6 @@ void MainWindow::timeoutWindow()
 {
     QVBoxLayout* vbox = new QVBoxLayout();
 
-    //alarm = new QMediaPlayer;
-    //audioOutput = new QAudioOutput;
-    //alarm->setAudioOutput(audioOutput);
     QMediaPlayer *player = new QMediaPlayer;
     QAudioOutput *audioOutput = new QAudioOutput;
     player->setAudioOutput(audioOutput);
@@ -256,9 +237,8 @@ void MainWindow::addTimerBtnClicked()
 {
     QTime time(addTimeEdit->time().hour(), addTimeEdit->time().minute(), addTimeEdit->time().second());
     Timer timer(time, addTextEdit->toPlainText());
-    for (int i = 0; i < addCountTextEdit->toPlainText().toInt(); i++) {
-        timers.append(timer);
-    }
+    timers.append(timer);
+
     addWindow->close();
     timersSort();
     if (timers.empty()) {
@@ -304,6 +284,7 @@ void MainWindow::editTimerBtnClicked()
     buffer.setDesc(editDescEdit->toPlainText());
 
     editWindow->close();
+    timersSort();
 }
 
 void MainWindow::deleteTimer()
@@ -328,6 +309,7 @@ void MainWindow::deleteAllTimers()
     mainTimerLbl->setText("00:00:00");
     mainTimerDescriptionLbl->setText("\0");
 }
+
 
 void MainWindow::settingsWindowSlot()
 {
